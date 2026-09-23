@@ -400,7 +400,7 @@ const T = {
   unitD:{alpha:"A to Z fingerspelling", num:"Counting from 0 to 10", words:"Hello, thank you, family and more"},
   seen:(n,t)=>`${n} of ${t} seen`,
   quiz:"Quiz", quizD:"Test yourself with 10 questions from all units.", startQuiz:"Start quiz",
-  back:"Back", next:"Next", prev:"Previous", play:"Play", pause:"Pause", slow:"Slow motion", mirror:"Left-handed view",
+  back:"Back", next:"Next", nextUnit:u=>`Next: ${u}`, takeQuiz:"Take the quiz", prev:"Previous", play:"Play", pause:"Pause", slow:"Slow motion", mirror:"Left-handed view",
   change:"Change sign language",
   q1:"Which sign is this?", q2:w=>`Which one is the sign for “${w}”?`,
   correct:"Correct!", wrong:a=>`Not quite. The answer is ${a}.`, nextQ:"Next question", finish:"See score",
@@ -419,7 +419,7 @@ const T = {
   unitD:{alpha:"A से Z तक उंगलियों से स्पेलिंग", num:"0 से 10 तक गिनती", words:"नमस्ते, धन्यवाद, परिवार और भी"},
   seen:(n,t)=>`${t} में से ${n} देखे`,
   quiz:"क्विज़", quizD:"सभी पाठों से 10 सवालों के साथ खुद को परखें।", startQuiz:"क्विज़ शुरू करें",
-  back:"वापस", next:"अगला", prev:"पिछला", play:"चलाएँ", pause:"रोकें", slow:"धीमी गति", mirror:"बाएँ हाथ वाला दृश्य",
+  back:"वापस", next:"अगला", nextUnit:u=>`आगे: ${u}`, takeQuiz:"क्विज़ दें", prev:"पिछला", play:"चलाएँ", pause:"रोकें", slow:"धीमी गति", mirror:"बाएँ हाथ वाला दृश्य",
   change:"सांकेतिक भाषा बदलें",
   q1:"यह कौन-सा संकेत है?", q2:w=>`“${w}” का संकेत कौन-सा है?`,
   correct:"सही!", wrong:a=>`नहीं। सही उत्तर है ${a}।`, nextQ:"अगला सवाल", finish:"स्कोर देखें",
@@ -504,6 +504,8 @@ function renderLesson(){
   const it = unit.items[route.i];
   const list = seenList(unit.id); if(!list.includes(it.id)){ list.push(it.id); save(); }
   const animated = !!it.anim.dur;
+  const units = COURSES[state.course].units, ui = units.indexOf(unit);
+  const isLast = route.i===unit.items.length-1, nextUnit = units[ui+1];
   app.innerHTML = `
     <div class="backrow"><button class="linkbtn" id="back">← ${esc(t().back)}</button>
       <span class="counter">${esc(t().units[unit.id])} · ${route.i+1} / ${unit.items.length}</span></div>
@@ -517,7 +519,7 @@ function renderLesson(){
     </div>
     <div class="nav">
       <button class="btn ghost" id="prev" ${route.i===0?'disabled':''}>${esc(t().prev)}</button>
-      <button class="btn" id="next" ${route.i===unit.items.length-1?'disabled':''}>${esc(t().next)}</button>
+      <button class="btn" id="next">${esc(isLast ? (nextUnit ? t().nextUnit(t().units[nextUnit.id]) : t().takeQuiz) : t().next)}</button>
     </div>`;
   const st = mountStage(document.getElementById('stage'), it);
   const play = document.getElementById('play');
@@ -529,7 +531,9 @@ function renderLesson(){
   document.getElementById('mirror').onclick=e=>{ state.mirror=!state.mirror; mirror=state.mirror; e.currentTarget.setAttribute('aria-pressed',state.mirror); save(); drawStage(st); };
   document.getElementById('back').onclick=()=>go({name:'home'});
   document.getElementById('prev').onclick=()=>go({...route, i:route.i-1});
-  document.getElementById('next').onclick=()=>go({...route, i:route.i+1});
+  document.getElementById('next').onclick=()=> !isLast ? go({...route, i:route.i+1})
+    : nextUnit ? go({name:'lesson', unit:nextUnit.id, i:0})
+    : go({name:'quiz', q:makeQuiz(), i:0, score:0});
 }
 
 /* ---------- Quiz ---------- */
