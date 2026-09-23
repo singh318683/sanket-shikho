@@ -12,19 +12,19 @@
 :root{
   --bg:#EEF1FA; --surface:#FFFFFF; --ink:#1D2550; --muted:#5B6390;
   --marigold:#F4A51C; --marigold-soft:#FCE6B8; --leaf:#2F8F5B; --rose:#C83E50;
-  --line:#D6DBEE; --shirt:#3B4A9A;
+  --line:#D6DBEE; --shirt:#3B4A9A; --shirt-dark:#1B2352;
   --skin:#EDBB93; --skin-shade:#D69C70; --outline:#6B3F24;
   --font:"Baloo 2", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#141833; --surface:#1F2448; --ink:#E8EAF7; --muted:#A7ADD3;
-    --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0;
+    --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0; --shirt-dark:#2B3680;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141833; --surface:#1F2448; --ink:#E8EAF7; --muted:#A7ADD3;
-  --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0;
+  --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0; --shirt-dark:#2B3680;
 }
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *,*::before,*::after{box-sizing:inherit}
@@ -59,6 +59,8 @@ p{margin:0 0 10px}
 .backrow{display:flex;align-items:center;justify-content:space-between;margin:2px 0 8px}
 .stage-card{background:var(--surface);border-radius:26px;border:2px solid var(--line);padding:10px 10px 4px;position:relative}
 .stage{width:100%;aspect-ratio:1;display:block}
+.scrub{display:flex;align-items:center;gap:10px;padding:2px 8px 8px;font-size:15px;color:var(--muted);font-weight:600}
+.scrub input{flex:1;accent-color:var(--marigold);height:28px}
 .label{display:flex;align-items:baseline;gap:12px;margin:14px 0 2px}
 .label .big{font-size:48px;font-weight:800;line-height:1}
 .label .sub{font-size:20px;color:var(--muted);font-weight:600}
@@ -167,9 +169,9 @@ function blendShapes(A,B,u){
 const r1 = n => Math.round(n*10)/10;
 function poly(pts){ return pts.map(p=>r1(p[0])+','+r1(p[1])).join(' '); }
 
-function handSVG(g){
+function handSVG(g, noForearm){
   const SK='var(--skin)', SH='var(--skin-shade)', OL='var(--outline)';
-  let s = `<path d="M-23 58 L-27 175 L27 175 L23 58Z" fill="${SK}" stroke="${OL}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  let s = noForearm ? '' : `<path d="M-23 58 L-27 175 L27 175 L23 58Z" fill="${SK}" stroke="${OL}" stroke-width="2.5" stroke-linejoin="round"/>`;
   s += `<rect x="-36" y="-10" width="72" height="78" rx="24" fill="${SK}" stroke="${OL}" stroke-width="2.5"/>`;
   s += `<path d="M-20 44 Q0 52 18 40" fill="none" stroke="${SH}" stroke-width="2" stroke-linecap="round"/>`;
   const thumb = ()=>`<polyline points="${poly(g.th)}" fill="none" stroke="${OL}" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>`+
@@ -282,29 +284,29 @@ const ASL_NUM = [
 const S = .62;
 const circle = (cx,cy,rx,ry,k)=>[[0,cx,cy-ry,0,S,k],[.25,cx+rx,cy,0,S,k],[.5,cx,cy+ry,0,S,k],[.75,cx-rx,cy,0,S,k],[1,cx,cy-ry,0,S,k]];
 const ASL_WORDS = [
- ['Hello','नमस्ते',{body:1,trail:[8,-66],dur:1800,hands:[{side:'R',frames:[[0,120,110,-8,S,'flat'],[.3,120,110,-8,S,'flat'],[.8,76,122,-35,S,'flat'],[1,76,122,-35,S,'flat']]}]},
+ ['Hello','नमस्ते',{body:1,cam:'45 25 230 230',trail:[8,-66],dur:1800,hands:[{side:'R',frames:[[0,120,110,-8,S,'flat'],[.3,120,110,-8,S,'flat'],[.8,76,122,-35,S,'flat'],[1,76,122,-35,S,'flat']]}]},
    "A flat hand starts at the side of the forehead and moves outward, like a salute.","सीधा हाथ माथे के बगल से बाहर की ओर जाता है — सलाम की तरह।"],
- ['Thank you','धन्यवाद',{body:1,trail:[8,-66],dur:2000,hands:[{side:'R',frames:[[0,154,186,0,S,'flat'],[.3,154,186,0,S,'flat'],[.8,118,232,-28,.72,'flat'],[1,118,232,-28,.72,'flat']]}]},
+ ['Thank you','धन्यवाद',{body:1,cam:'45 45 230 230',trail:[8,-66],dur:2000,hands:[{side:'R',frames:[[0,154,186,0,S,'flat'],[.3,154,186,0,S,'flat'],[.8,118,232,-28,.72,'flat'],[1,118,232,-28,.72,'flat']]}]},
    "Fingertips of a flat hand touch the chin, then the hand moves forward and down.","सीधे हाथ की उंगलियाँ ठुड्डी को छूती हैं, फिर हाथ आगे और नीचे जाता है।"],
- ['Please','कृपया',{body:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'flat')}]},
+ ['Please','कृपया',{body:1,cam:'45 105 230 230',trailFull:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'flat')}]},
    "Flat hand on the chest, moving in a circle.","सीधा हाथ छाती पर, गोल-गोल घुमाएँ।"],
- ['Sorry','माफ़ कीजिए',{body:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'A')}]},
+ ['Sorry','माफ़ कीजिए',{body:1,cam:'45 105 230 230',trailFull:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'A')}]},
    "Fist on the chest, moving in a circle.","मुट्ठी छाती पर, गोल-गोल घुमाएँ।"],
- ['Yes','हाँ',{body:1,dur:1200,hands:[{side:'R',frames:[[0,118,226,0,S,'S'],[.25,118,240,8,.58,'S'],[.5,118,226,0,S,'S'],[.75,118,240,8,.58,'S'],[1,118,226,0,S,'S']]}]},
+ ['Yes','हाँ',{body:1,cam:'45 105 230 230',dur:1200,hands:[{side:'R',frames:[[0,118,226,0,S,'S'],[.25,118,240,8,.58,'S'],[.5,118,226,0,S,'S'],[.75,118,240,8,.58,'S'],[1,118,226,0,S,'S']]}]},
    "A fist nods up and down, like a head nodding yes.","मुट्ठी ऊपर-नीचे हिलती है, जैसे सिर 'हाँ' में हिलता है।"],
- ['No','नहीं',{body:1,dur:1400,hands:[{side:'R',frames:[[0,116,226,0,S,'no1'],[.3,116,226,0,S,'no1'],[.55,116,230,0,S,'no2'],[.8,116,230,0,S,'no2'],[1,116,226,0,S,'no1']]}]},
+ ['No','नहीं',{body:1,cam:'45 105 230 230',dur:1400,hands:[{side:'R',frames:[[0,116,226,0,S,'no1'],[.3,116,226,0,S,'no1'],[.55,116,230,0,S,'no2'],[.8,116,230,0,S,'no2'],[1,116,226,0,S,'no1']]}]},
    "Index and middle fingers snap down to meet the thumb.","तर्जनी और मध्यमा झटके से नीचे आकर अंगूठे से मिलती हैं।"],
- ['I love you','मैं तुमसे प्यार करता/करती हूँ',{body:1,dur:1600,hands:[{side:'R',frames:[[0,114,214,-6,S,'ily'],[.5,114,214,6,S,'ily'],[1,114,214,-6,S,'ily']]}]},
+ ['I love you','मैं तुमसे प्यार करता/करती हूँ',{body:1,cam:'45 105 230 230',dur:1600,hands:[{side:'R',frames:[[0,114,214,-6,S,'ily'],[.5,114,214,6,S,'ily'],[1,114,214,-6,S,'ily']]}]},
    "Thumb, index finger and little finger out, palm facing forward.","अंगूठा, तर्जनी और छोटी उंगली बाहर, हथेली सामने की ओर।"],
- ['Water','पानी',{body:1,dur:1400,hands:[{side:'R',frames:[[0,146,188,0,S,'W'],[.2,146,178,0,S,'W'],[.4,146,188,0,S,'W'],[.6,146,178,0,S,'W'],[1,146,188,0,S,'W']]}]},
+ ['Water','पानी',{body:1,cam:'45 25 230 230',dur:1400,hands:[{side:'R',frames:[[0,146,188,0,S,'W'],[.2,146,178,0,S,'W'],[.4,146,188,0,S,'W'],[.6,146,178,0,S,'W'],[1,146,188,0,S,'W']]}]},
    "W hand taps the chin twice.","W वाला हाथ ठुड्डी पर दो बार थपथपाएँ।"],
- ['Eat','खाना',{body:1,dur:1400,hands:[{side:'R',frames:[[0,146,150,-25,S,'O'],[.25,152,138,-25,S,'O'],[.5,146,150,-25,S,'O'],[.75,152,138,-25,S,'O'],[1,146,150,-25,S,'O']]}]},
+ ['Eat','खाना',{body:1,cam:'45 25 230 230',dur:1400,hands:[{side:'R',frames:[[0,146,150,-25,S,'O'],[.25,152,138,-25,S,'O'],[.5,146,150,-25,S,'O'],[.75,152,138,-25,S,'O'],[1,146,150,-25,S,'O']]}]},
    "Fingertips together, tap toward the mouth.","उंगलियों के सिरे मिलाकर मुँह की ओर थपथपाएँ।"],
- ['Mother','माँ',{body:1,dur:1400,hands:[{side:'R',frames:[[0,110,123,0,S,'five'],[.25,102,125,0,S,'five'],[.5,110,123,0,S,'five'],[.75,102,125,0,S,'five'],[1,110,123,0,S,'five']]}]},
+ ['Mother','माँ',{body:1,cam:'45 25 230 230',dur:1400,hands:[{side:'R',frames:[[0,110,123,0,S,'five'],[.25,102,125,0,S,'five'],[.5,110,123,0,S,'five'],[.75,102,125,0,S,'five'],[1,110,123,0,S,'five']]}]},
    "Open hand with fingers spread. The thumb taps the chin.","खुला हाथ, उंगलियाँ फैली हुई। अंगूठा ठुड्डी पर थपथपाएँ।"],
- ['Father','पिता',{body:1,dur:1400,hands:[{side:'R',frames:[[0,110,50,0,S,'five'],[.25,102,52,0,S,'five'],[.5,110,50,0,S,'five'],[.75,102,52,0,S,'five'],[1,110,50,0,S,'five']]}]},
+ ['Father','पिता',{body:1,cam:'45 0 230 230',dur:1400,hands:[{side:'R',frames:[[0,110,50,0,S,'five'],[.25,102,52,0,S,'five'],[.5,110,50,0,S,'five'],[.75,102,52,0,S,'five'],[1,110,50,0,S,'five']]}]},
    "Open hand with fingers spread. The thumb taps the forehead.","खुला हाथ, उंगलियाँ फैली हुई। अंगूठा माथे पर थपथपाएँ।"],
- ['Help','मदद',{body:1,trail:[0,-30],dur:1800,hands:[
+ ['Help','मदद',{body:1,cam:'45 105 230 230',trail:[0,-30],dur:1800,hands:[
      {side:'R',frames:[[0,160,214,0,S,'thumbsUp'],[.3,160,214,0,S,'thumbsUp'],[.8,160,184,0,S,'thumbsUp'],[1,160,184,0,S,'thumbsUp']]},
      {side:'L',frames:[[0,192,280,-90,S,'flat'],[.3,192,280,-90,S,'flat'],[.8,192,250,-90,S,'flat'],[1,192,250,-90,S,'flat']]}]},
    "A thumbs-up fist rests on the other flat hand. Both hands lift together.","अंगूठा-ऊपर मुट्ठी दूसरे सीधे हाथ पर टिकी रहती है। दोनों हाथ साथ में ऊपर उठते हैं।"],
@@ -335,8 +337,45 @@ function xform(h, side, p){
   return [h.x + x*c - y*s, h.y + x*s + y*c];
 }
 
+// How different two keyframes look (position, turn, hand shape)
+function frameDist(a,b){
+  const sa=SH[a[5]], sb=SH[b[5]];
+  let d = Math.hypot(a[1]-b[1], a[2]-b[2]) + Math.abs(a[3]-b[3])*.6 + Math.abs(a[4]-b[4])*60;
+  sa.f.forEach((f,i)=>f.forEach((v,k)=>d += Math.abs(v-(sb.f[i][k]||0))*(k===2?.3:20)));
+  return d;
+}
+function animInfo(A){
+  if(A._info) return A._info;
+  const h0 = A.hands[0].frames;
+  const cyclic = A.hands.every(h=>frameDist(h.frames[0], h.frames[h.frames.length-1])<.01);
+  let peak = h0[h0.length-1][0], best=-1;
+  if(cyclic) h0.forEach(f=>{ const d=frameDist(h0[0],f); if(d>best+.01){best=d; peak=f[0];} });
+  A._info = {cyclic, peak, ghosts: cyclic ? [0, peak] : [0, 1], trailTo: A.trailFull ? 1 : (cyclic ? peak : 1)};
+  return A._info;
+}
+
+// Two-bone arm: shoulder -> elbow -> wrist, elbow bends down and outward
+const SHOULDER = {R:[98,242], L:[222,242]};
+const UPPER=80, FORE=72;
+function elbowFor(S, W, side){
+  const dx=W[0]-S[0], dy=W[1]-S[1];
+  let d=Math.hypot(dx,dy); d=Math.min(Math.max(d, Math.abs(UPPER-FORE)+1), UPPER+FORE-1);
+  const a=Math.acos((UPPER*UPPER + d*d - FORE*FORE)/(2*UPPER*d)), base=Math.atan2(dy,dx);
+  const c1=[S[0]+UPPER*Math.cos(base+a), S[1]+UPPER*Math.sin(base+a)];
+  const c2=[S[0]+UPPER*Math.cos(base-a), S[1]+UPPER*Math.sin(base-a)];
+  const score = p => p[1] + (side==='R' ? -p[0] : p[0])*.8;
+  return score(c1) > score(c2) ? c1 : c2;
+}
+function armSVG(hs, side){
+  const S=SHOULDER[side], W=xform(hs, side, [0,60]), E=elbowFor(S, W, side);
+  return `<polyline points="${poly([E,W])}" fill="none" stroke="var(--outline)" stroke-width="26" stroke-linecap="round"/>`+
+         `<polyline points="${poly([E,W])}" fill="none" stroke="var(--skin)" stroke-width="21" stroke-linecap="round"/>`+
+         `<polyline points="${poly([S,E])}" fill="none" stroke="var(--shirt-dark)" stroke-width="33" stroke-linecap="round" stroke-linejoin="round"/>`+
+         `<polyline points="${poly([S,E])}" fill="none" stroke="var(--shirt)" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
 function bodySVG(){
-  return `<path d="M58 332 C60 252 100 214 160 211 C220 214 260 252 262 332Z" fill="var(--shirt)"/>
+  return `<path d="M36 430 C40 254 100 214 160 211 C220 214 280 254 284 430Z" fill="var(--shirt)"/>
   <path d="M146 134 L146 176 Q160 186 174 176 L174 134Z" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
   <ellipse cx="116" cy="102" rx="8" ry="12" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
   <ellipse cx="204" cy="102" rx="8" ry="12" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
@@ -346,40 +385,70 @@ function bodySVG(){
   <path d="M149 123 Q160 131 171 123" fill="none" stroke="var(--outline)" stroke-width="2.5" stroke-linecap="round"/>`;
 }
 
+// Timeline: fade in, hold the start, move, hold the end, fade out.
+// Repeating signs (taps, circles, shakes) loop with a short pause instead.
+const FADE=260, LEAD=500, HOLD=750, CYC_PAUSE=350;
+function timeline(st){
+  const A=st.item.anim, info=animInfo(A), dur=A.dur;
+  if(st.scrub!=null) return {phase:st.scrub, op:1};
+  if(info.cyclic){ const T=CYC_PAUSE+dur, e=st.elapsed%T; return {phase: e<CYC_PAUSE ? 0 : (e-CYC_PAUSE)/dur, op:1}; }
+  const T=FADE+LEAD+dur+HOLD+FADE, e=st.elapsed%T;
+  if(e<FADE) return {phase:0, op:e/FADE};
+  if(e<FADE+LEAD) return {phase:0, op:1};
+  if(e<FADE+LEAD+dur) return {phase:(e-FADE-LEAD)/dur, op:1};
+  if(e<FADE+LEAD+dur+HOLD) return {phase:1, op:1};
+  return {phase:1, op:Math.max(0, 1-(e-FADE-LEAD-dur-HOLD)/FADE)};
+}
+
 const stages = new Set();
 let speed = 1, mirror = false;
 
 function mountStage(svg, item, opts={}){
-  const st = {svg, item, elapsed:0, playing: !reduceMotion && !opts.paused, still: opts.still};
+  const st = {svg, item, elapsed:0, scrub:null, playing: !reduceMotion && !opts.paused, still: opts.still, mini: opts.mini};
   stages.add(st); drawStage(st); return st;
 }
 
 function drawStage(st){
-  const A = st.item.anim, body = !!A.body;
-  const dur = A.dur||0;
-  const phase = dur ? (st.still ? .5 : (st.elapsed % dur)/dur) : 0;
-  const vb = body ? '0 0 320 330' : '-100 -90 200 200';
+  const A = st.item.anim, body = !!A.body, animated = !!A.dur;
+  let phase=0, op=1;
+  if(animated){ if(st.still) phase = animInfo(A).peak*.999; else ({phase, op} = timeline(st)); }
+  if(st.onPhase) st.onPhase(phase);
+  const vb = body ? (st.mini || st.still ? '0 0 320 330' : (A.cam || '30 30 260 260')) : '-100 -90 200 200';
   if(st.svg.getAttribute('viewBox')!==vb) st.svg.setAttribute('viewBox', vb);
   let inner = body ? bodySVG() : `<circle cx="0" cy="8" r="84" fill="var(--marigold-soft)"/>`;
-  if(A.trail && !st.still && !st.small){
-    const h0 = A.hands[0]; const pts=[];
-    for(let k=0;k<=48;k++){ const hs=sampleHand(h0.frames, k/48); pts.push(xform(hs,h0.side,A.trail)); }
-    // drop repeated points so the arrow head has a direction
+  const extras = animated && !st.still && !st.mini; let trail='';
+
+  if(extras){
+    const info = animInfo(A);
+    // faint start / end poses, like a printed sign dictionary
+    info.ghosts.forEach(p=>A.hands.forEach(h=>{
+      const hs=sampleHand(h.frames, p); const mx=h.side==='L'?-1:1;
+      inner += `<g opacity=".28" transform="translate(${r1(hs.x)} ${r1(hs.y)}) rotate(${r1(hs.r)}) scale(${r1(hs.s*mx*100)/100} ${r1(hs.s*100)/100})">${handSVG(hs.g, true)}</g>`;
+    }));
+    // motion path of the dominant hand
+    const h0=A.hands[0], tp=A.trail||[0,-20], pts=[];
+    for(let k=0;k<=48;k++){ pts.push(xform(sampleHand(h0.frames, info.trailTo*k/48), h0.side, tp)); }
     const clean = pts.filter((p,i)=>i===0 || Math.hypot(p[0]-pts[i-1][0],p[1]-pts[i-1][1])>.3);
-    if(clean.length>2) inner += `<polyline points="${poly(clean)}" fill="none" stroke="var(--marigold)" stroke-width="${body?3:2.5}" stroke-dasharray="6 6" stroke-linecap="round" marker-end="url(#arrow)"/>`;
+    let len=0; clean.forEach((p,i)=>{ if(i) len+=Math.hypot(p[0]-clean[i-1][0],p[1]-clean[i-1][1]); });
+    if(clean.length>2 && len>6) trail = `<polyline points="${poly(clean)}" fill="none" stroke="var(--surface)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>`+
+      `<polyline points="${poly(clean)}" fill="none" stroke="var(--marigold)" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>`;
   }
+
+  let hands='';
   A.hands.forEach(h=>{
-    const hs = sampleHand(h.frames, phase);
-    const mx = h.side==='L' ? -1 : 1;
-    inner += `<g transform="translate(${r1(hs.x)} ${r1(hs.y)}) rotate(${r1(hs.r)}) scale(${r1(hs.s*mx*100)/100} ${r1(hs.s*100)/100})">${handSVG(hs.g)}</g>`;
+    const hs = sampleHand(h.frames, phase), mx = h.side==='L' ? -1 : 1;
+    if(body) hands += armSVG(hs, h.side);
+    hands += `<g transform="translate(${r1(hs.x)} ${r1(hs.y)}) rotate(${r1(hs.r)}) scale(${r1(hs.s*mx*100)/100} ${r1(hs.s*100)/100})">${handSVG(hs.g, body)}</g>`;
   });
+  inner += `<g opacity="${r1(op*100)/100}">${hands}</g>`;
+  inner += trail;
   const flip = mirror ? (body ? 'translate(320 0) scale(-1 1)' : 'scale(-1 1)') : '';
-  st.svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--marigold)"/></marker></defs><g transform="${flip}">${inner}</g>`;
+  st.svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--marigold)"/></marker></defs><g transform="${flip}">${inner}</g>`;
 }
 
 let last = performance.now();
 function tick(now){
-  const dt = now-last; last=now;
+  const dt = Math.min(100, now-last); last=now;
   stages.forEach(st=>{
     if(!st.svg.isConnected){ stages.delete(st); return; }
     if(st.item.anim.dur && st.playing && !st.still){ st.elapsed += dt*speed; drawStage(st); }
@@ -400,7 +469,7 @@ const T = {
   unitD:{alpha:"A to Z fingerspelling", num:"Counting from 0 to 10", words:"Hello, thank you, family and more"},
   seen:(n,t)=>`${n} of ${t} seen`,
   quiz:"Quiz", quizD:"Test yourself with 10 questions from all units.", startQuiz:"Start quiz",
-  back:"Back", next:"Next", nextUnit:u=>`Next: ${u}`, takeQuiz:"Take the quiz", prev:"Previous", play:"Play", pause:"Pause", slow:"Slow motion", mirror:"Left-handed view",
+  back:"Back", step:"Step through", next:"Next", nextUnit:u=>`Next: ${u}`, takeQuiz:"Take the quiz", prev:"Previous", play:"Play", pause:"Pause", slow:"Slow motion", mirror:"Left-handed view",
   change:"Change sign language",
   q1:"Which sign is this?", q2:w=>`Which one is the sign for “${w}”?`,
   correct:"Correct!", wrong:a=>`Not quite. The answer is ${a}.`, nextQ:"Next question", finish:"See score",
@@ -419,7 +488,7 @@ const T = {
   unitD:{alpha:"A से Z तक उंगलियों से स्पेलिंग", num:"0 से 10 तक गिनती", words:"नमस्ते, धन्यवाद, परिवार और भी"},
   seen:(n,t)=>`${t} में से ${n} देखे`,
   quiz:"क्विज़", quizD:"सभी पाठों से 10 सवालों के साथ खुद को परखें।", startQuiz:"क्विज़ शुरू करें",
-  back:"वापस", next:"अगला", nextUnit:u=>`आगे: ${u}`, takeQuiz:"क्विज़ दें", prev:"पिछला", play:"चलाएँ", pause:"रोकें", slow:"धीमी गति", mirror:"बाएँ हाथ वाला दृश्य",
+  back:"वापस", step:"धीरे-धीरे देखें", next:"अगला", nextUnit:u=>`आगे: ${u}`, takeQuiz:"क्विज़ दें", prev:"पिछला", play:"चलाएँ", pause:"रोकें", slow:"धीमी गति", mirror:"बाएँ हाथ वाला दृश्य",
   change:"सांकेतिक भाषा बदलें",
   q1:"यह कौन-सा संकेत है?", q2:w=>`“${w}” का संकेत कौन-सा है?`,
   correct:"सही!", wrong:a=>`नहीं। सही उत्तर है ${a}।`, nextQ:"अगला सवाल", finish:"स्कोर देखें",
@@ -509,7 +578,8 @@ function renderLesson(){
   app.innerHTML = `
     <div class="backrow"><button class="linkbtn" id="back">← ${esc(t().back)}</button>
       <span class="counter">${esc(t().units[unit.id])} · ${route.i+1} / ${unit.items.length}</span></div>
-    <div class="stage-card"><svg class="stage" id="stage" role="img" aria-label="${esc(it.label)}"></svg></div>
+    <div class="stage-card"><svg class="stage" id="stage" role="img" aria-label="${esc(it.label)}"></svg>
+      ${animated?`<label class="scrub"><span>${esc(t().step)}</span><input type="range" id="scrub" min="0" max="1000" value="0"></label>`:''}</div>
     <div class="label"><span class="big">${itemName(it)}</span></div>
     <p>${esc(state.ui==='hi'? it.hi : it.en)}</p>
     <div class="controls">
@@ -525,7 +595,12 @@ function renderLesson(){
   const play = document.getElementById('play');
   const syncPlay=()=>{ if(play) play.textContent = st.playing ? t().pause : t().play; };
   syncPlay();
-  if(play) play.onclick=()=>{ st.playing=!st.playing; syncPlay(); };
+  if(play) play.onclick=()=>{ st.playing=!st.playing; if(st.playing) st.scrub=null; syncPlay(); };
+  const scrub=document.getElementById('scrub');
+  if(scrub){
+    st.onPhase = p=>{ if(st.scrub==null) scrub.value=Math.round(p*1000); };
+    scrub.oninput=()=>{ st.playing=false; st.scrub=scrub.value/1000; syncPlay(); drawStage(st); };
+  }
   const slow = document.getElementById('slow');
   if(slow) slow.onclick=()=>{ state.slow=!state.slow; speed=state.slow?.45:1; slow.setAttribute('aria-pressed',state.slow); save(); };
   document.getElementById('mirror').onclick=e=>{ state.mirror=!state.mirror; mirror=state.mirror; e.currentTarget.setAttribute('aria-pressed',state.mirror); save(); drawStage(st); };
@@ -576,7 +651,7 @@ function renderQuiz(){
     <div class="feedback" id="fb" aria-live="polite"></div>
     <button class="btn full" id="nextQ" hidden>${esc(route.i===Q.length-1? t().finish : t().nextQ)}</button>`;
   if(q.type==='name') mountStage(document.getElementById('stage'), q.ans);
-  else q.opts.forEach((o,k)=>mountStage(app.querySelector(`[data-mini="${k}"]`), o));
+  else q.opts.forEach((o,k)=>mountStage(app.querySelector(`[data-mini="${k}"]`), o, {mini:true}));
   let answered=false;
   app.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{
     if(answered) return; answered=true;
