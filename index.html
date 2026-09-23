@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sanket Shikho – Learn Sign Language</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤟</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1FA; --surface:#FFFFFF; --ink:#1D2550; --muted:#5B6390;
+  --marigold:#F4A51C; --marigold-soft:#FCE6B8; --leaf:#2F8F5B; --rose:#C83E50;
+  --line:#D6DBEE; --shirt:#3B4A9A;
+  --skin:#EDBB93; --skin-shade:#D69C70; --outline:#6B3F24;
+  --font:"Baloo 2", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141833; --surface:#1F2448; --ink:#E8EAF7; --muted:#A7ADD3;
+    --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141833; --surface:#1F2448; --ink:#E8EAF7; --muted:#A7ADD3;
+  --marigold-soft:#4A3A1A; --line:#323A6B; --shirt:#5566C0;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:18px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--marigold);outline-offset:2px}
+.wrap{max-width:540px;margin:0 auto;padding:12px 18px 40px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0}
+.brand svg{width:30px;height:30px}
+.toggle{display:flex;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:3px}
+.toggle button{border:0;background:none;padding:4px 12px;border-radius:999px;font-size:15px;font-weight:600;color:var(--muted)}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+h1{font-size:30px;line-height:1.15;margin:8px 0 6px;font-weight:800;letter-spacing:-.015em}
+h2{font-size:22px;margin:0 0 4px;font-weight:700}
+p{margin:0 0 10px}
+.muted{color:var(--muted)}
+.hero-stage{width:100%;max-width:300px;aspect-ratio:1;margin:4px auto 0;display:block}
+.choice{display:block;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px 18px;margin:12px 0}
+.choice:hover:not(:disabled){border-color:var(--ink)}
+.choice:disabled{opacity:.6;cursor:not-allowed}
+.choice .t{font-weight:700;font-size:20px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.choice .d{color:var(--muted);font-size:16px}
+.pill{font-size:13px;font-weight:600;background:var(--marigold-soft);color:var(--ink);padding:2px 10px;border-radius:999px;white-space:nowrap}
+.unit{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 16px;margin:10px 0}
+.unit:hover{border-color:var(--ink)}
+.unit svg{width:64px;height:64px}
+.bar{height:6px;background:var(--line);border-radius:6px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--leaf);border-radius:6px}
+.linkbtn{background:none;border:0;padding:6px 0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:16px}
+.backrow{display:flex;align-items:center;justify-content:space-between;margin:2px 0 8px}
+.stage-card{background:var(--surface);border-radius:26px;border:2px solid var(--line);padding:10px 10px 4px;position:relative}
+.stage{width:100%;aspect-ratio:1;display:block}
+.label{display:flex;align-items:baseline;gap:12px;margin:14px 0 2px}
+.label .big{font-size:48px;font-weight:800;line-height:1}
+.label .sub{font-size:20px;color:var(--muted);font-weight:600}
+.counter{font-size:15px;color:var(--muted)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:16px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{border:0;border-radius:16px;padding:12px 16px;font-size:18px;font-weight:700;background:var(--ink);color:var(--bg)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.full{width:100%}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.qopt{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px;font-size:20px;font-weight:700;min-height:58px}
+.qopt.pic{padding:4px}
+.qopt.pic svg{width:100%;aspect-ratio:1;display:block}
+.qopt.right{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 14%,var(--surface))}
+.qopt.wrong{border-color:var(--rose);background:color-mix(in srgb,var(--rose) 12%,var(--surface))}
+.feedback{min-height:30px;margin-top:12px;font-weight:600}
+.feedback.ok{color:var(--leaf)} .feedback.no{color:var(--rose)}
+.progress{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:4px 0 12px}
+.progress i{display:block;height:100%;background:var(--marigold)}
+.score{font-size:64px;font-weight:800;line-height:1;margin:18px 0 6px}
+footer.note{margin-top:28px;font-size:14px;color:var(--muted);border-top:1.5px solid var(--line);padding-top:12px}
+@media (max-width:380px){ h1{font-size:26px} .label .big{font-size:40px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="brand" aria-label="Home">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#F4A51C"/><text x="50" y="68" text-anchor="middle" font-size="52">🤟</text></svg>
+      <span id="brandName">Sanket Shikho</span>
+    </button>
+    <div class="toggle" role="group" aria-label="Language">
+      <button data-ui="en" aria-pressed="true">EN</button>
+      <button data-ui="hi" aria-pressed="false">हिंदी</button>
+    </div>
+  </header>
+  <main id="app"></main>
+  <footer class="note" id="note"></footer>
+</div>
+
+<script>
+/* ============================================================
+   Sanket Shikho – sign language learning prototype
+   Hand engine: each hand shape is a set of finger/thumb
+   parameters; the engine projects them into a 2D drawing and
+   animates by interpolating between keyframes.
+   ============================================================ */
+
+const RAD = Math.PI/180;
+const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Hand geometry ---------- */
+// Finger bases (index is on the thumb side = +x, viewer's right, palm facing viewer)
+const FINGERS = [ {x:24,y:-4,L:58}, {x:8,y:-7,L:64}, {x:-8,y:-5,L:60}, {x:-24,y:1,L:47} ];
+const SEG = [.46,.30,.24];
+const THUMB_BASE = [30,48];
+
+function fingerGeom(i,f){
+  const F = FINGERS[i], c=f[0], h=f[1], s=f[2]||0;
+  const dx = Math.sin(s*RAD), dy = -Math.cos(s*RAD);
+  const joints = [c*88 + h*4, c*100 + h*85, c*40 + h*55];
+  let th=0, x=F.x, y=F.y; const pts=[[x,y]], folded=[];
+  for(let k=0;k<3;k++){
+    th += joints[k];
+    const pr = F.L*SEG[k]*Math.cos(th*RAD);
+    x += dx*pr; y += dy*pr;
+    pts.push([x,y]); folded.push(Math.cos(th*RAD) < -0.05);
+  }
+  return {pts, folded};
+}
+
+function thumbGeom(t, fg){
+  const p0 = THUMB_BASE; let p1, p2;
+  if(t.to!=null || t.pt){
+    const tg = t.pt ? t.pt : fg[t.to].pts[3];
+    p2 = [tg[0]+(t.dx??4), tg[1]+(t.dy??2)];
+    p1 = [(p0[0]+p2[0])/2 + 12, (p0[1]+p2[1])/2 + 4];
+  } else {
+    const l = t.l||1, a=t.a*RAD, a2=(t.a-(t.b||0))*RAD;
+    p1 = [p0[0]+Math.sin(a)*28*l, p0[1]-Math.cos(a)*28*l];
+    p2 = [p1[0]+Math.sin(a2)*25*l, p1[1]-Math.cos(a2)*25*l];
+  }
+  return [p0,p1,p2];
+}
+
+function shapeGeom(sh){
+  const fg = sh.f.map((f,i)=>fingerGeom(i,f));
+  return {fg, th: thumbGeom(sh.t, fg), tf: sh.tf ?? 1};
+}
+
+function lerp(a,b,u){return a+(b-a)*u}
+function lerpPt(p,q,u){return [lerp(p[0],q[0],u), lerp(p[1],q[1],u)]}
+
+function blendShapes(A,B,u){
+  if(A===B || u<=0) return shapeGeom(A);
+  if(u>=1) return shapeGeom(B);
+  const f = A.f.map((fa,i)=>fa.map((v,k)=>lerp(v, B.f[i][k]||0, u)));
+  const fg = f.map((ff,i)=>fingerGeom(i,ff));
+  const tA = shapeGeom(A).th, tB = shapeGeom(B).th;
+  return {fg, th: tA.map((p,k)=>lerpPt(p,tB[k],u)), tf: u<.5 ? (A.tf??1) : (B.tf??1)};
+}
+
+const r1 = n => Math.round(n*10)/10;
+function poly(pts){ return pts.map(p=>r1(p[0])+','+r1(p[1])).join(' '); }
+
+function handSVG(g){
+  const SK='var(--skin)', SH='var(--skin-shade)', OL='var(--outline)';
+  let s = `<path d="M-23 58 L-27 175 L27 175 L23 58Z" fill="${SK}" stroke="${OL}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  s += `<rect x="-36" y="-10" width="72" height="78" rx="24" fill="${SK}" stroke="${OL}" stroke-width="2.5"/>`;
+  s += `<path d="M-20 44 Q0 52 18 40" fill="none" stroke="${SH}" stroke-width="2" stroke-linecap="round"/>`;
+  const thumb = ()=>`<polyline points="${poly(g.th)}" fill="none" stroke="${OL}" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>`+
+                    `<polyline points="${poly(g.th)}" fill="none" stroke="${SK}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(!g.tf) s += thumb();
+  g.fg.forEach(fin=>{
+    s += `<polyline points="${poly(fin.pts)}" fill="none" stroke="${OL}" stroke-width="18.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    for(let k=0;k<3;k++){
+      const a=fin.pts[k], b=fin.pts[k+1];
+      s += `<line x1="${r1(a[0])}" y1="${r1(a[1])}" x2="${r1(b[0])}" y2="${r1(b[1])}" stroke="${fin.folded[k]?SH:SK}" stroke-width="14" stroke-linecap="round"/>`;
+    }
+  });
+  if(g.tf) s += thumb();
+  return s;
+}
+
+/* ---------- Hand shape library (ASL) ---------- */
+const X = [1,0,0];                // folded into fist
+const E = (s=0)=>[0,0,s];         // extended
+const TH_ACROSS = {a:-40,b:50,l:.95};  // thumb across folded fingers
+
+const SH = {
+  A:{f:[X,X,X,X], t:{a:6,b:0,l:.85}},
+  B:{f:[E(-3),E(-1),E(1),E(3)], t:{a:-72,b:18,l:.95}},
+  C:{f:[[.36,.55,-2],[.36,.55,0],[.36,.55,2],[.36,.55,4]], t:{a:38,b:-38,l:.95}},
+  D:{f:[E(0),[.62,.35,0],[.62,.35,0],[.62,.35,2]], t:{to:1}},
+  E:{f:[[.3,1,0],[.3,1,0],[.3,1,0],[.3,1,0]], t:{pt:[-14,12]}, tf:0},
+  F:{f:[[.55,.35,0],E(2),E(-6),E(-14)], t:{to:0}},
+  G:{f:[E(0),X,X,X], t:{a:12,b:0,l:1}},
+  H:{f:[E(0),E(0),X,X], t:TH_ACROSS},
+  I:{f:[X,X,X,E(-4)], t:TH_ACROSS},
+  K:{f:[E(8),[.32,0,-10],X,X], t:{pt:[10,-8]}},
+  L:{f:[E(0),X,X,X], t:{a:88,b:0,l:1.05}},
+  M:{f:[[.85,0,0],[.85,0,0],[.85,0,0],X], t:{pt:[-18,12]}, tf:0},
+  N:{f:[[.85,0,0],[.85,0,0],X,X], t:{pt:[-2,12]}, tf:0},
+  O:{f:[[.55,.4,-4],[.55,.4,-2],[.55,.4,2],[.55,.4,6]], t:{to:1}},
+  R:{f:[E(-9),E(9),X,X], t:TH_ACROSS},
+  S:{f:[X,X,X,X], t:TH_ACROSS},
+  T:{f:[X,X,X,X], t:{pt:[16,6]}, tf:0},
+  U:{f:[E(-4),E(4),X,X], t:TH_ACROSS},
+  V:{f:[E(12),E(-10),X,X], t:TH_ACROSS},
+  W:{f:[E(14),E(0),E(-14),[.7,.3,0]], t:{to:3}},
+  Xh:{f:[[.12,1,0],X,X,X], t:TH_ACROSS},
+  Y:{f:[X,X,X,E(-18)], t:{a:80,b:-5,l:1}},
+  one:{f:[E(0),X,X,X], t:TH_ACROSS},
+  three:{f:[E(10),E(-8),X,X], t:{a:60,b:0,l:1}},
+  four:{f:[E(14),E(4),E(-6),E(-16)], t:{a:-72,b:18,l:.95}},
+  five:{f:[E(14),E(4),E(-6),E(-16)], t:{a:75,b:0,l:1}},
+  six:{f:[E(10),E(0),E(-10),[.55,.35,0]], t:{to:3}},
+  seven:{f:[E(10),E(0),[.55,.35,0],E(-14)], t:{to:2}},
+  eight:{f:[E(10),[.55,.35,0],E(-6),E(-14)], t:{to:1}},
+  thumbsUp:{f:[X,X,X,X], t:{a:0,b:0,l:1.15}},
+  flat:{f:[E(-3),E(-1),E(1),E(3)], t:{a:8,b:-8,l:.9}},
+  no1:{f:[E(-2),E(2),X,X], t:{a:80,b:0,l:1}},
+  no2:{f:[[.55,.4,0],[.55,.4,-4],X,X], t:{to:0}},
+  ily:{f:[E(4),X,X,E(-10)], t:{a:85,b:0,l:1.05}},
+};
+
+/* ---------- Items ---------- */
+// frame: [t, x, y, rot, scale, shapeKey]
+const still = (k,r=0,x=0,y=0,s=1)=>({hands:[{side:'R',frames:[[0,x,y,r,s,k]]}]});
+
+const ASL_ALPHA = [
+ ['A',still('A'),"Make a fist. The thumb rests against the side of the index finger.","मुट्ठी बनाएँ। अंगूठा तर्जनी (पहली उंगली) के बगल में सटा रहे।"],
+ ['B',still('B'),"Four fingers straight up and together. The thumb is folded across the palm.","चारों उंगलियाँ सीधी ऊपर और सटी हुई। अंगूठा हथेली पर मुड़ा हुआ।"],
+ ['C',still('C'),"Curve the fingers and thumb into a C shape. From the side, the hand looks like the letter C.","उंगलियों और अंगूठे को मोड़कर C का आकार बनाएँ। बगल से देखने पर हाथ C जैसा दिखता है।"],
+ ['D',still('D'),"Index finger points up. The other fingers curve down to touch the thumb, making a circle.","तर्जनी ऊपर। बाकी उंगलियाँ मुड़कर अंगूठे को छूती हैं और गोला बनाती हैं।"],
+ ['E',still('E'),"Bend all fingertips down so they rest on the thumb, which is tucked across the palm.","सभी उंगलियों के सिरे नीचे मोड़ें और हथेली पर मुड़े अंगूठे पर टिकाएँ।"],
+ ['F',still('F'),"Index finger and thumb touch to make a circle. The other three fingers point up, spread apart.","तर्जनी और अंगूठा मिलकर गोला बनाते हैं। बाकी तीन उंगलियाँ ऊपर, फैली हुई।"],
+ ['G',still('G',90),"Index finger and thumb point sideways, parallel to each other. Other fingers closed.","तर्जनी और अंगूठा बगल की ओर, एक-दूसरे के समानांतर। बाकी उंगलियाँ बंद।"],
+ ['H',still('H',90),"Index and middle fingers together, pointing sideways.","तर्जनी और मध्यमा साथ में, बगल की ओर इशारा करती हुई।"],
+ ['I',still('I'),"Little finger up. The other fingers make a fist with the thumb across them.","छोटी उंगली ऊपर। बाकी उंगलियाँ मुट्ठी में, अंगूठा उनके ऊपर।"],
+ ['J',{trail:[-25,-50],dur:2200,hands:[{side:'R',frames:[[0,0,0,0,1,'I'],[.2,0,0,0,1,'I'],[.55,-4,22,0,1,'I'],[.85,6,26,75,1,'I'],[1,6,26,75,1,'I']]}]},
+   "Make the letter I, then draw a J in the air with the little finger.","I बनाएँ, फिर छोटी उंगली से हवा में J बनाएँ।"],
+ ['K',still('K'),"Index finger up, middle finger angled forward, thumb touching the middle finger between them.","तर्जनी ऊपर, मध्यमा आगे की ओर तिरछी, अंगूठा दोनों के बीच मध्यमा को छूता हुआ।"],
+ ['L',still('L'),"Index finger up and thumb out to the side, making an L.","तर्जनी ऊपर और अंगूठा बगल में — L का आकार।"],
+ ['M',still('M'),"Fold three fingers down over the thumb.","तीन उंगलियाँ अंगूठे के ऊपर मोड़ें।"],
+ ['N',still('N'),"Fold two fingers down over the thumb.","दो उंगलियाँ अंगूठे के ऊपर मोड़ें।"],
+ ['O',still('O'),"All fingertips touch the thumb, making an O.","सभी उंगलियों के सिरे अंगूठे को छूते हैं — O का आकार।"],
+ ['P',still('K',160,0,22),"Make the letter K, then point it downward.","K बनाएँ और उसे नीचे की ओर करें।"],
+ ['Q',still('G',175,6,22),"Make the letter G, then point it downward.","G बनाएँ और उसे नीचे की ओर करें।"],
+ ['R',still('R'),"Cross the index and middle fingers.","तर्जनी और मध्यमा को आपस में क्रॉस करें।"],
+ ['S',still('S'),"Make a fist with the thumb across the front of the fingers.","मुट्ठी बनाएँ, अंगूठा उंगलियों के आगे से होकर।"],
+ ['T',still('T'),"Make a fist with the thumb tucked between the index and middle fingers.","मुट्ठी बनाएँ, अंगूठा तर्जनी और मध्यमा के बीच दबा हुआ।"],
+ ['U',still('U'),"Index and middle fingers up, held together.","तर्जनी और मध्यमा साथ में ऊपर।"],
+ ['V',still('V'),"Index and middle fingers up and apart, like a V.","तर्जनी और मध्यमा ऊपर और अलग — V की तरह।"],
+ ['W',still('W'),"Index, middle and ring fingers up and spread. The thumb holds the little finger.","तर्जनी, मध्यमा और अनामिका ऊपर और फैली हुई। अंगूठा छोटी उंगली को पकड़े।"],
+ ['X',still('Xh'),"Index finger bent into a hook. Other fingers closed.","तर्जनी हुक की तरह मुड़ी हुई। बाकी उंगलियाँ बंद।"],
+ ['Y',still('Y'),"Thumb and little finger out. Other fingers closed.","अंगूठा और छोटी उंगली बाहर। बाकी उंगलियाँ बंद।"],
+ ['Z',{trail:[24,-58],dur:2600,hands:[{side:'R',frames:[[0,-30,-4,0,.85,'one'],[.12,-30,-4,0,.85,'one'],[.38,30,-4,0,.85,'one'],[.62,-30,34,0,.85,'one'],[.86,30,34,0,.85,'one'],[1,30,34,0,.85,'one']]}]},
+   "Draw a Z in the air with the index finger.","तर्जनी से हवा में Z बनाएँ।"],
+];
+
+const ASL_NUM = [
+ ['0',still('O'),"All fingertips touch the thumb, making a 0.","सभी सिरे अंगूठे को छूते हैं — 0 का आकार।"],
+ ['1',still('one'),"Index finger up.","तर्जनी ऊपर।"],
+ ['2',still('V'),"Index and middle fingers up and apart.","तर्जनी और मध्यमा ऊपर, अलग-अलग।"],
+ ['3',still('three'),"Thumb, index and middle fingers out.","अंगूठा, तर्जनी और मध्यमा बाहर।"],
+ ['4',still('four'),"Four fingers up and spread. Thumb folded in.","चार उंगलियाँ ऊपर और फैली हुई। अंगूठा अंदर मुड़ा हुआ।"],
+ ['5',still('five'),"All five fingers spread.","पाँचों उंगलियाँ फैली हुई।"],
+ ['6',still('six'),"Thumb touches the little finger. The other three fingers point up.","अंगूठा छोटी उंगली को छूता है। बाकी तीन उंगलियाँ ऊपर।"],
+ ['7',still('seven'),"Thumb touches the ring finger.","अंगूठा अनामिका को छूता है।"],
+ ['8',still('eight'),"Thumb touches the middle finger.","अंगूठा मध्यमा को छूता है।"],
+ ['9',still('F'),"Thumb touches the index finger.","अंगूठा तर्जनी को छूता है।"],
+ ['10',{dur:1400,hands:[{side:'R',frames:[[0,0,6,-14,1,'thumbsUp'],[.5,0,6,14,1,'thumbsUp'],[1,0,6,-14,1,'thumbsUp']]}]},
+   "Thumbs up, then shake the hand side to side.","अंगूठा ऊपर, फिर हाथ को दाएँ-बाएँ हिलाएँ।"],
+];
+
+// Word signs use a signer figure. Positions are in the 320x330 body scene.
+const S = .62;
+const circle = (cx,cy,rx,ry,k)=>[[0,cx,cy-ry,0,S,k],[.25,cx+rx,cy,0,S,k],[.5,cx,cy+ry,0,S,k],[.75,cx-rx,cy,0,S,k],[1,cx,cy-ry,0,S,k]];
+const ASL_WORDS = [
+ ['Hello','नमस्ते',{body:1,trail:[8,-66],dur:1800,hands:[{side:'R',frames:[[0,120,110,-8,S,'flat'],[.3,120,110,-8,S,'flat'],[.8,76,122,-35,S,'flat'],[1,76,122,-35,S,'flat']]}]},
+   "A flat hand starts at the side of the forehead and moves outward, like a salute.","सीधा हाथ माथे के बगल से बाहर की ओर जाता है — सलाम की तरह।"],
+ ['Thank you','धन्यवाद',{body:1,trail:[8,-66],dur:2000,hands:[{side:'R',frames:[[0,154,186,0,S,'flat'],[.3,154,186,0,S,'flat'],[.8,118,232,-28,.72,'flat'],[1,118,232,-28,.72,'flat']]}]},
+   "Fingertips of a flat hand touch the chin, then the hand moves forward and down.","सीधे हाथ की उंगलियाँ ठुड्डी को छूती हैं, फिर हाथ आगे और नीचे जाता है।"],
+ ['Please','कृपया',{body:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'flat')}]},
+   "Flat hand on the chest, moving in a circle.","सीधा हाथ छाती पर, गोल-गोल घुमाएँ।"],
+ ['Sorry','माफ़ कीजिए',{body:1,trail:[0,30],dur:1800,hands:[{side:'R',frames:circle(138,256,14,12,'A')}]},
+   "Fist on the chest, moving in a circle.","मुट्ठी छाती पर, गोल-गोल घुमाएँ।"],
+ ['Yes','हाँ',{body:1,dur:1200,hands:[{side:'R',frames:[[0,118,226,0,S,'S'],[.25,118,240,8,.58,'S'],[.5,118,226,0,S,'S'],[.75,118,240,8,.58,'S'],[1,118,226,0,S,'S']]}]},
+   "A fist nods up and down, like a head nodding yes.","मुट्ठी ऊपर-नीचे हिलती है, जैसे सिर 'हाँ' में हिलता है।"],
+ ['No','नहीं',{body:1,dur:1400,hands:[{side:'R',frames:[[0,116,226,0,S,'no1'],[.3,116,226,0,S,'no1'],[.55,116,230,0,S,'no2'],[.8,116,230,0,S,'no2'],[1,116,226,0,S,'no1']]}]},
+   "Index and middle fingers snap down to meet the thumb.","तर्जनी और मध्यमा झटके से नीचे आकर अंगूठे से मिलती हैं।"],
+ ['I love you','मैं तुमसे प्यार करता/करती हूँ',{body:1,dur:1600,hands:[{side:'R',frames:[[0,114,214,-6,S,'ily'],[.5,114,214,6,S,'ily'],[1,114,214,-6,S,'ily']]}]},
+   "Thumb, index finger and little finger out, palm facing forward.","अंगूठा, तर्जनी और छोटी उंगली बाहर, हथेली सामने की ओर।"],
+ ['Water','पानी',{body:1,dur:1400,hands:[{side:'R',frames:[[0,146,188,0,S,'W'],[.2,146,178,0,S,'W'],[.4,146,188,0,S,'W'],[.6,146,178,0,S,'W'],[1,146,188,0,S,'W']]}]},
+   "W hand taps the chin twice.","W वाला हाथ ठुड्डी पर दो बार थपथपाएँ।"],
+ ['Eat','खाना',{body:1,dur:1400,hands:[{side:'R',frames:[[0,146,150,-25,S,'O'],[.25,152,138,-25,S,'O'],[.5,146,150,-25,S,'O'],[.75,152,138,-25,S,'O'],[1,146,150,-25,S,'O']]}]},
+   "Fingertips together, tap toward the mouth.","उंगलियों के सिरे मिलाकर मुँह की ओर थपथपाएँ।"],
+ ['Mother','माँ',{body:1,dur:1400,hands:[{side:'R',frames:[[0,110,123,0,S,'five'],[.25,102,125,0,S,'five'],[.5,110,123,0,S,'five'],[.75,102,125,0,S,'five'],[1,110,123,0,S,'five']]}]},
+   "Open hand with fingers spread. The thumb taps the chin.","खुला हाथ, उंगलियाँ फैली हुई। अंगूठा ठुड्डी पर थपथपाएँ।"],
+ ['Father','पिता',{body:1,dur:1400,hands:[{side:'R',frames:[[0,110,50,0,S,'five'],[.25,102,52,0,S,'five'],[.5,110,50,0,S,'five'],[.75,102,52,0,S,'five'],[1,110,50,0,S,'five']]}]},
+   "Open hand with fingers spread. The thumb taps the forehead.","खुला हाथ, उंगलियाँ फैली हुई। अंगूठा माथे पर थपथपाएँ।"],
+ ['Help','मदद',{body:1,trail:[0,-30],dur:1800,hands:[
+     {side:'R',frames:[[0,160,214,0,S,'thumbsUp'],[.3,160,214,0,S,'thumbsUp'],[.8,160,184,0,S,'thumbsUp'],[1,160,184,0,S,'thumbsUp']]},
+     {side:'L',frames:[[0,192,280,-90,S,'flat'],[.3,192,280,-90,S,'flat'],[.8,192,250,-90,S,'flat'],[1,192,250,-90,S,'flat']]}]},
+   "A thumbs-up fist rests on the other flat hand. Both hands lift together.","अंगूठा-ऊपर मुट्ठी दूसरे सीधे हाथ पर टिकी रहती है। दोनों हाथ साथ में ऊपर उठते हैं।"],
+];
+
+const COURSES = {
+  asl: {
+    units: [
+      {id:'alpha', items: ASL_ALPHA.map(a=>({id:a[0], label:a[0], anim:a[1], en:a[2], hi:a[3]}))},
+      {id:'num',   items: ASL_NUM.map(a=>({id:a[0], label:a[0], anim:a[1], en:a[2], hi:a[3]}))},
+      {id:'words', items: ASL_WORDS.map(a=>({id:a[0], label:a[0], labelHi:a[1], anim:a[2], en:a[3], hi:a[4]}))},
+    ]
+  }
+};
+
+/* ---------- Animation engine ---------- */
+const smooth = u => u*u*(3-2*u);
+function sampleHand(frames, phase){
+  if(frames.length===1){ const f=frames[0]; return {x:f[1],y:f[2],r:f[3],s:f[4],g:shapeGeom(SH[f[5]])}; }
+  let i=0; while(i<frames.length-2 && phase>frames[i+1][0]) i++;
+  const a=frames[i], b=frames[i+1];
+  const span=b[0]-a[0]; const u = span>0 ? smooth(Math.min(1,Math.max(0,(phase-a[0])/span))) : 1;
+  return {x:lerp(a[1],b[1],u), y:lerp(a[2],b[2],u), r:lerp(a[3],b[3],u), s:lerp(a[4],b[4],u), g:blendShapes(SH[a[5]],SH[b[5]],u)};
+}
+function xform(h, side, p){
+  const mx = side==='L' ? -1 : 1;
+  const x = p[0]*h.s*mx, y = p[1]*h.s, c=Math.cos(h.r*RAD), s=Math.sin(h.r*RAD);
+  return [h.x + x*c - y*s, h.y + x*s + y*c];
+}
+
+function bodySVG(){
+  return `<path d="M58 332 C60 252 100 214 160 211 C220 214 260 252 262 332Z" fill="var(--shirt)"/>
+  <path d="M146 134 L146 176 Q160 186 174 176 L174 134Z" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
+  <ellipse cx="116" cy="102" rx="8" ry="12" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
+  <ellipse cx="204" cy="102" rx="8" ry="12" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
+  <circle cx="160" cy="100" r="44" fill="var(--skin)" stroke="var(--outline)" stroke-width="2.5"/>
+  <path d="M116 98 C112 54 208 54 204 98 C198 74 122 74 116 98Z" fill="#2B2B3A"/>
+  <circle cx="145" cy="104" r="3.4" fill="#2B2B3A"/><circle cx="175" cy="104" r="3.4" fill="#2B2B3A"/>
+  <path d="M149 123 Q160 131 171 123" fill="none" stroke="var(--outline)" stroke-width="2.5" stroke-linecap="round"/>`;
+}
+
+const stages = new Set();
+let speed = 1, mirror = false;
+
+function mountStage(svg, item, opts={}){
+  const st = {svg, item, elapsed:0, playing: !reduceMotion && !opts.paused, still: opts.still};
+  stages.add(st); drawStage(st); return st;
+}
+
+function drawStage(st){
+  const A = st.item.anim, body = !!A.body;
+  const dur = A.dur||0;
+  const phase = dur ? (st.still ? .5 : (st.elapsed % dur)/dur) : 0;
+  const vb = body ? '0 0 320 330' : '-100 -90 200 200';
+  if(st.svg.getAttribute('viewBox')!==vb) st.svg.setAttribute('viewBox', vb);
+  let inner = body ? bodySVG() : `<circle cx="0" cy="8" r="84" fill="var(--marigold-soft)"/>`;
+  if(A.trail && !st.still && !st.small){
+    const h0 = A.hands[0]; const pts=[];
+    for(let k=0;k<=48;k++){ const hs=sampleHand(h0.frames, k/48); pts.push(xform(hs,h0.side,A.trail)); }
+    // drop repeated points so the arrow head has a direction
+    const clean = pts.filter((p,i)=>i===0 || Math.hypot(p[0]-pts[i-1][0],p[1]-pts[i-1][1])>.3);
+    if(clean.length>2) inner += `<polyline points="${poly(clean)}" fill="none" stroke="var(--marigold)" stroke-width="${body?3:2.5}" stroke-dasharray="6 6" stroke-linecap="round" marker-end="url(#arrow)"/>`;
+  }
+  A.hands.forEach(h=>{
+    const hs = sampleHand(h.frames, phase);
+    const mx = h.side==='L' ? -1 : 1;
+    inner += `<g transform="translate(${r1(hs.x)} ${r1(hs.y)}) rotate(${r1(hs.r)}) scale(${r1(hs.s*mx*100)/100} ${r1(hs.s*100)/100})">${handSVG(hs.g)}</g>`;
+  });
+  const flip = mirror ? (body ? 'translate(320 0) scale(-1 1)' : 'scale(-1 1)') : '';
+  st.svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--marigold)"/></marker></defs><g transform="${flip}">${inner}</g>`;
+}
+
+let last = performance.now();
+function tick(now){
+  const dt = now-last; last=now;
+  stages.forEach(st=>{
+    if(!st.svg.isConnected){ stages.delete(st); return; }
+    if(st.item.anim.dur && st.playing && !st.still){ st.elapsed += dt*speed; drawStage(st); }
+  });
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ---------- UI text ---------- */
+const T = {
+ en:{
+  tagline:"Learn sign language, one hand shape at a time.",
+  choose:"Which sign language do you want to learn?",
+  asl:"American Sign Language (ASL)", aslD:"Used in the US and Canada. One-handed alphabet.",
+  isl:"Indian Sign Language (ISL)", islD:"Used across India. Two-handed alphabet.",
+  soon:"Coming soon",
+  units:{alpha:"Alphabet", num:"Numbers", words:"Everyday words"},
+  unitD:{alpha:"A to Z fingerspelling", num:"Counting from 0 to 10", words:"Hello, thank you, family and more"},
+  seen:(n,t)=>`${n} of ${t} seen`,
+  quiz:"Quiz", quizD:"Test yourself with 10 questions from all units.", startQuiz:"Start quiz",
+  back:"Back", next:"Next", prev:"Previous", play:"Play", pause:"Pause", slow:"Slow motion", mirror:"Left-handed view",
+  change:"Change sign language",
+  q1:"Which sign is this?", q2:w=>`Which one is the sign for “${w}”?`,
+  correct:"Correct!", wrong:a=>`Not quite. The answer is ${a}.`, nextQ:"Next question", finish:"See score",
+  score:(s,t)=>`You got ${s} of ${t} right.`, again:"Try again", lessons:"Back to lessons",
+  qn:(i,t)=>`Question ${i} of ${t}`,
+  note:"These drawings are simplified. Before relying on them, check each sign with a Deaf signer or a certified interpreter.",
+  aslShort:"ASL"
+ },
+ hi:{
+  tagline:"सांकेतिक भाषा सीखें, एक-एक संकेत करके।",
+  choose:"आप कौन-सी सांकेतिक भाषा सीखना चाहते हैं?",
+  asl:"अमेरिकन साइन लैंग्वेज (ASL)", aslD:"अमेरिका और कनाडा में इस्तेमाल होती है। एक हाथ वाली वर्णमाला।",
+  isl:"भारतीय सांकेतिक भाषा (ISL)", islD:"पूरे भारत में इस्तेमाल होती है। दो हाथों वाली वर्णमाला।",
+  soon:"जल्द आ रही है",
+  units:{alpha:"वर्णमाला", num:"संख्याएँ", words:"रोज़ के शब्द"},
+  unitD:{alpha:"A से Z तक उंगलियों से स्पेलिंग", num:"0 से 10 तक गिनती", words:"नमस्ते, धन्यवाद, परिवार और भी"},
+  seen:(n,t)=>`${t} में से ${n} देखे`,
+  quiz:"क्विज़", quizD:"सभी पाठों से 10 सवालों के साथ खुद को परखें।", startQuiz:"क्विज़ शुरू करें",
+  back:"वापस", next:"अगला", prev:"पिछला", play:"चलाएँ", pause:"रोकें", slow:"धीमी गति", mirror:"बाएँ हाथ वाला दृश्य",
+  change:"सांकेतिक भाषा बदलें",
+  q1:"यह कौन-सा संकेत है?", q2:w=>`“${w}” का संकेत कौन-सा है?`,
+  correct:"सही!", wrong:a=>`नहीं। सही उत्तर है ${a}।`, nextQ:"अगला सवाल", finish:"स्कोर देखें",
+  score:(s,t)=>`${t} में से ${s} सही।`, again:"फिर से खेलें", lessons:"पाठों पर वापस",
+  qn:(i,t)=>`सवाल ${i} / ${t}`,
+  note:"ये चित्र सरल रूप में हैं। इन पर भरोसा करने से पहले हर संकेत किसी बधिर साइनर या प्रमाणित दुभाषिए से जाँच लें।",
+  aslShort:"ASL"
+ }
+};
+
+/* ---------- State ---------- */
+const KEY='sanket-shikho:v1';
+let state = {ui:'en', course:null, seen:{}, slow:false, mirror:false};
+try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s) state=Object.assign(state,s); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+speed = state.slow ? .45 : 1; mirror = !!state.mirror;
+
+const t = () => T[state.ui];
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function itemName(it){ return state.ui==='hi' && it.labelHi ? `${it.labelHi} <span class="muted">(${esc(it.label)})</span>` : esc(it.label); }
+function itemPlain(it){ return state.ui==='hi' && it.labelHi ? it.labelHi : it.label; }
+function seenList(unit){ const c=state.course; state.seen[c]=state.seen[c]||{}; state.seen[c][unit]=state.seen[c][unit]||[]; return state.seen[c][unit]; }
+
+function applyUI(){
+  document.documentElement.lang = state.ui==='hi' ? 'hi' : 'en';
+  document.querySelectorAll('.toggle button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.ui===state.ui)));
+  document.getElementById('note').textContent = t().note;
+}
+
+/* ---------- Screens ---------- */
+let route = {name: state.course ? 'home' : 'start'};
+function go(r){ route=r; render(); window.scrollTo(0,0); }
+
+function render(){
+  applyUI();
+  stages.forEach(s=>stages.delete(s));
+  ({start:renderStart, home:renderHome, lesson:renderLesson, quiz:renderQuiz})[route.name]();
+}
+
+function renderStart(){
+  app.innerHTML = `
+    <svg class="hero-stage" id="hero" role="img" aria-label="Animated hand"></svg>
+    <h1>${esc(t().choose)}</h1>
+    <p class="muted">${esc(t().tagline)}</p>
+    <button class="choice" id="pickAsl"><span class="t">${esc(t().asl)}</span><span class="d">${esc(t().aslD)}</span></button>
+    <button class="choice" disabled><span class="t">${esc(t().isl)} <span class="pill">${esc(t().soon)}</span></span><span class="d">${esc(t().islD)}</span></button>`;
+  const hello = {anim:{dur:2400,hands:[{side:'R',frames:[[0,0,6,-12,1,'five'],[.25,0,6,12,1,'five'],[.5,0,6,-12,1,'five'],[.62,0,6,0,1,'ily'],[.9,0,6,0,1,'ily'],[1,0,6,-12,1,'five']]}]}};
+  mountStage(document.getElementById('hero'), hello);
+  document.getElementById('pickAsl').onclick=()=>{ state.course='asl'; save(); go({name:'home'}); };
+}
+
+function unitIcon(unit){
+  return unit.id==='words' ? unit.items[0] : unit.items[unit.id==='alpha'?0:5];
+}
+
+function renderHome(){
+  const C = COURSES[state.course];
+  app.innerHTML = `
+    <div class="backrow"><h1 style="margin:0">${esc(t().asl)}</h1></div>
+    ${C.units.map(u=>{
+      const n=seenList(u.id).length, tot=u.items.length;
+      return `<button class="unit" data-unit="${u.id}"><svg data-icon="${u.id}" aria-hidden="true"></svg>
+        <span><h2>${esc(t().units[u.id])}</h2><span class="muted">${esc(t().unitD[u.id])}</span>
+        <div class="bar" aria-label="${esc(t().seen(n,tot))}"><i style="width:${Math.round(n/tot*100)}%"></i></div>
+        <span class="counter">${esc(t().seen(n,tot))}</span></span></button>`;}).join('')}
+    <button class="unit" data-quiz="1"><svg data-icon="quiz" aria-hidden="true"></svg>
+      <span><h2>${esc(t().quiz)}</h2><span class="muted">${esc(t().quizD)}</span></span></button>
+    <button class="linkbtn" id="change">${esc(t().change)}</button>`;
+  C.units.forEach(u=>{
+    const it = u.id==='alpha'? u.items[0] : u.id==='num' ? u.items[5] : {anim:still('ily')};
+    const st = mountStage(app.querySelector(`[data-icon="${u.id}"]`), it, {still:true}); st.small=true; drawStage(st);
+  });
+  mountStage(app.querySelector('[data-icon="quiz"]'), {anim:still('thumbsUp')}, {still:true});
+  app.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>go({name:'lesson', unit:b.dataset.unit, i:0}));
+  app.querySelector('[data-quiz]').onclick=()=>go({name:'quiz', q:makeQuiz(), i:0, score:0});
+  document.getElementById('change').onclick=()=>go({name:'start'});
+}
+
+function renderLesson(){
+  const unit = COURSES[state.course].units.find(u=>u.id===route.unit);
+  const it = unit.items[route.i];
+  const list = seenList(unit.id); if(!list.includes(it.id)){ list.push(it.id); save(); }
+  const animated = !!it.anim.dur;
+  app.innerHTML = `
+    <div class="backrow"><button class="linkbtn" id="back">← ${esc(t().back)}</button>
+      <span class="counter">${esc(t().units[unit.id])} · ${route.i+1} / ${unit.items.length}</span></div>
+    <div class="stage-card"><svg class="stage" id="stage" role="img" aria-label="${esc(it.label)}"></svg></div>
+    <div class="label"><span class="big">${itemName(it)}</span></div>
+    <p>${esc(state.ui==='hi'? it.hi : it.en)}</p>
+    <div class="controls">
+      ${animated?`<button class="chip" id="play"></button>`:''}
+      ${animated?`<button class="chip" id="slow" aria-pressed="${state.slow}">${esc(t().slow)}</button>`:''}
+      <button class="chip" id="mirror" aria-pressed="${state.mirror}">${esc(t().mirror)}</button>
+    </div>
+    <div class="nav">
+      <button class="btn ghost" id="prev" ${route.i===0?'disabled':''}>${esc(t().prev)}</button>
+      <button class="btn" id="next" ${route.i===unit.items.length-1?'disabled':''}>${esc(t().next)}</button>
+    </div>`;
+  const st = mountStage(document.getElementById('stage'), it);
+  const play = document.getElementById('play');
+  const syncPlay=()=>{ if(play) play.textContent = st.playing ? t().pause : t().play; };
+  syncPlay();
+  if(play) play.onclick=()=>{ st.playing=!st.playing; syncPlay(); };
+  const slow = document.getElementById('slow');
+  if(slow) slow.onclick=()=>{ state.slow=!state.slow; speed=state.slow?.45:1; slow.setAttribute('aria-pressed',state.slow); save(); };
+  document.getElementById('mirror').onclick=e=>{ state.mirror=!state.mirror; mirror=state.mirror; e.currentTarget.setAttribute('aria-pressed',state.mirror); save(); drawStage(st); };
+  document.getElementById('back').onclick=()=>go({name:'home'});
+  document.getElementById('prev').onclick=()=>go({...route, i:route.i-1});
+  document.getElementById('next').onclick=()=>go({...route, i:route.i+1});
+}
+
+/* ---------- Quiz ---------- */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function makeQuiz(){
+  const units = COURSES[state.course].units;
+  const qs=[];
+  for(let n=0;n<10;n++){
+    const u = units[n%units.length];
+    const pool = u.items.filter(it=>!(u.id==='num' && ['9','0','2'].includes(it.id))); // skip numbers that share a shape with letters
+    let ans; do{ ans = pool[Math.floor(Math.random()*pool.length)]; } while(qs.some(q=>q.ans===ans) && pool.length>3);
+    const opts = shuffle([ans, ...shuffle(pool.filter(x=>x!==ans)).slice(0,3)]);
+    qs.push({type: Math.random()<.5 ? 'name':'pick', ans, opts});
+  }
+  return shuffle(qs);
+}
+
+function renderQuiz(){
+  const Q = route.q;
+  if(route.i>=Q.length){
+    app.innerHTML = `<div class="backrow"><button class="linkbtn" id="back">← ${esc(t().back)}</button></div>
+      <div class="score">${route.score}/${Q.length}</div><p>${esc(t().score(route.score,Q.length))}</p>
+      <svg class="hero-stage" id="hero" role="img" aria-label=""></svg>
+      <div class="nav"><button class="btn ghost" id="home">${esc(t().lessons)}</button><button class="btn" id="again">${esc(t().again)}</button></div>`;
+    mountStage(document.getElementById('hero'), {anim: route.score>=7 ? {dur:1400,hands:[{side:'R',frames:[[0,0,6,-10,1,'thumbsUp'],[.5,0,0,10,1,'thumbsUp'],[1,0,6,-10,1,'thumbsUp']]}]} : still('ily')});
+    document.getElementById('back').onclick=document.getElementById('home').onclick=()=>go({name:'home'});
+    document.getElementById('again').onclick=()=>go({name:'quiz', q:makeQuiz(), i:0, score:0});
+    return;
+  }
+  const q = Q[route.i];
+  const prompt = q.type==='name' ? t().q1 : t().q2(itemPlain(q.ans));
+  app.innerHTML = `
+    <div class="backrow"><button class="linkbtn" id="back">← ${esc(t().back)}</button><span class="counter">${esc(t().qn(route.i+1,Q.length))}</span></div>
+    <div class="progress"><i style="width:${route.i/Q.length*100}%"></i></div>
+    <h2>${esc(prompt)}</h2>
+    ${q.type==='name' ? `<div class="stage-card"><svg class="stage" id="stage" role="img" aria-label="sign"></svg></div>` : ''}
+    <div class="qopts">${q.opts.map((o,k)=> q.type==='name'
+        ? `<button class="qopt" data-k="${k}">${itemName(o)}</button>`
+        : `<button class="qopt pic" data-k="${k}" aria-label="Option ${k+1}"><svg data-mini="${k}"></svg></button>`).join('')}</div>
+    <div class="feedback" id="fb" aria-live="polite"></div>
+    <button class="btn full" id="nextQ" hidden>${esc(route.i===Q.length-1? t().finish : t().nextQ)}</button>`;
+  if(q.type==='name') mountStage(document.getElementById('stage'), q.ans);
+  else q.opts.forEach((o,k)=>mountStage(app.querySelector(`[data-mini="${k}"]`), o));
+  let answered=false;
+  app.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{
+    if(answered) return; answered=true;
+    const pick=q.opts[+b.dataset.k], ok = pick===q.ans;
+    if(ok) route.score++;
+    app.querySelectorAll('.qopt').forEach(x=>{ const o=q.opts[+x.dataset.k]; if(o===q.ans) x.classList.add('right'); else if(x===b) x.classList.add('wrong'); });
+    const fb=document.getElementById('fb'); fb.className='feedback '+(ok?'ok':'no');
+    fb.textContent = ok ? t().correct : t().wrong(itemPlain(q.ans));
+    const n=document.getElementById('nextQ'); n.hidden=false; n.focus();
+  });
+  document.getElementById('back').onclick=()=>go({name:'home'});
+  document.getElementById('nextQ').onclick=()=>go({...route, i:route.i+1});
+}
+
+/* ---------- Boot ---------- */
+document.querySelectorAll('.toggle button').forEach(b=>b.onclick=()=>{ state.ui=b.dataset.ui; save(); render(); });
+document.getElementById('brand').onclick=()=>go({name: state.course?'home':'start'});
+render();
+</script>
+</body>
+</html>
